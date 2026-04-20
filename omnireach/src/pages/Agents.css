@@ -1,0 +1,213 @@
+/* ============================================
+   AGENTS MANAGEMENT
+   ============================================ */
+
+.agents-container {
+  padding: 0 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  overflow: auto;
+}
+
+.agents-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  marginTop: 16px;
+}
+
+.agents-title {
+  font-size: 3rem;
+  fontWeight: 800;
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.agents-subtitle {
+  color: var(--text-muted);
+  font-size: 1.125rem;
+}
+
+.agent-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 32px;
+}
+
+/* Agent Card (Vignette) */
+.agent-vignette-card {
+  padding: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.agent-vignette-card:hover {
+  border-color: rgba(201, 255, 31, 0.3);
+  transform: translateY(-2px);
+}
+
+.agent-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.agent-info-group {
+  display: flex;
+  gap: 16px;
+}
+
+.agent-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid var(--border-gray);
+}
+
+.agent-avatar-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--surface-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  border: 1px solid var(--border-gray);
+}
+
+.agent-name-stack h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.agent-id-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* Status Pill */
+.agent-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--surface-bright);
+  border-radius: 100px;
+}
+
+.agent-status-pill.active {
+  background: rgba(201, 255, 31, 0.1);
+}
+
+.status-dot-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--neon-lime);
+  box-shadow: 0 0 8px var(--neon-lime);
+}
+
+.status-text {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-text.active {
+  color: var(--neon-lime);
+}
+
+/* Details Section */
+.agent-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.agent-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.model-badge {
+  font-size: 10px;
+  font-weight: 800;
+  background: var(--surface-bright);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* New Agent CTA Dash Card */
+.agent-cta-dash-card {
+  border: 2px dashed var(--border-gray);
+  border-radius: 24px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cta-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--surface-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+.cta-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.cta-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 240px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.cta-link {
+  color: var(--neon-lime);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

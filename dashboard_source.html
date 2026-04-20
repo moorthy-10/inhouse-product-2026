@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Omnireach Dashboard</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config for custom colors -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dashboard-bg': '#121212',
+            'sidebar-bg': '#191919',
+            'card-bg': '#1E1E1E',
+            'neon-lime': '#C9FF1F',
+            'border-gray': '#2E2E2E',
+            'text-muted': '#9CA3AF',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbars">
+    /* Custom thin scrollbar for a clean UI */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="bg-dashboard-bg text-white h-full font-sans flex overflow-hidden">
+<!-- BEGIN: Sidebar -->
+<aside class="w-64 bg-sidebar-bg flex flex-col border-r border-border-gray h-full shrink-0" data-purpose="main-navigation">
+<!-- Logo Section -->
+<div class="p-6 flex items-center space-x-3">
+<div class="w-8 h-8 bg-neon-lime rounded flex items-center justify-center text-black font-bold">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3"></circle><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"></path></svg>
+</div>
+<span class="text-neon-lime font-semibold text-lg">Omnireach</span>
+</div>
+<!-- Navigation Menu -->
+<nav class="flex-1 px-4 space-y-6 overflow-y-auto mt-4">
+<!-- Workspace -->
+<div>
+<p class="text-[10px] uppercase text-text-muted font-bold tracking-widest px-2 mb-2">Workspace</p>
+<div class="space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2 bg-neon-lime/10 text-neon-lime border border-neon-lime/30 rounded-lg text-sm" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<div class="flex items-center space-x-3">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Campaigns</span>
+</div>
+<span class="bg-neon-lime text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Conversations</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Contacts</span>
+</a>
+</div>
+</div>
+<!-- Automate -->
+<div>
+<p class="text-[10px] uppercase text-text-muted font-bold tracking-widest px-2 mb-2">Automate</p>
+<div class="space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Flow builder</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Contacts</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Schedule</span>
+</a>
+</div>
+</div>
+<!-- Analyse -->
+<div>
+<p class="text-[10px] uppercase text-text-muted font-bold tracking-widest px-2 mb-2">Analyse</p>
+<div class="space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Reports</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Logs &amp; audit</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Sidebar Footer -->
+<div class="p-4 mt-auto border-t border-border-gray">
+<a class="flex items-center space-x-3 px-3 py-2 text-text-muted hover:bg-white/5 rounded-lg text-sm transition-colors mb-4" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Settings</span>
+</a>
+<div class="flex items-center space-x-3 px-3">
+<div class="w-10 h-10 rounded-full bg-[#3D3D00] flex items-center justify-center text-neon-lime text-xs font-bold ring-1 ring-neon-lime/20">
+          AK
+        </div>
+<div>
+<p class="text-sm font-semibold">Arjun Kumar</p>
+<p class="text-[10px] text-text-muted">Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content Container -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto">
+<!-- BEGIN: Header -->
+<header class="h-20 flex items-center justify-between px-8 shrink-0">
+<h1 class="text-xl font-semibold">Dashboard</h1>
+<div class="flex items-center space-x-4">
+<!-- Search -->
+<div class="relative group">
+<svg class="absolute left-3 top-2.5 w-4 h-4 text-text-muted group-focus-within:text-white transition-colors" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<input class="bg-[#191919] border-border-gray rounded-lg pl-10 pr-4 py-2 text-sm w-80 focus:ring-neon-lime focus:border-neon-lime transition-all outline-none" placeholder="Search campaigns, contacts..." type="text"/>
+</div>
+<!-- Action Icons -->
+<div class="flex items-center space-x-2">
+<button class="p-2 text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<button class="p-2 text-text-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<!-- New Campaign Button -->
+<button class="bg-neon-lime text-black font-bold px-4 py-2 rounded-lg text-sm flex items-center space-x-2 hover:bg-[#b8e61c] transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>New campaign</span>
+</button>
+</div>
+</header>
+<!-- END: Header -->
+<!-- Scrollable Content Area -->
+<div class="px-8 pb-8 space-y-6">
+<!-- BEGIN: Metric Cards Section -->
+<section class="grid grid-cols-4 gap-4" data-purpose="metrics-grid">
+<!-- Card 1 -->
+<div class="bg-card-bg border border-border-gray p-5 rounded-2xl">
+<p class="text-text-muted text-xs font-medium mb-1">Total conversations</p>
+<h2 class="text-3xl font-bold mb-2">48,302</h2>
+<div class="flex items-center text-neon-lime text-xs space-x-1 mb-4">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+<span>12.4% vs last month</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-neon-lime rounded-full w-[40%]"></div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-card-bg border border-border-gray p-5 rounded-2xl">
+<p class="text-text-muted text-xs font-medium mb-1">Automation rate</p>
+<h2 class="text-3xl font-bold mb-2">96.2%</h2>
+<div class="flex items-center text-neon-lime text-xs space-x-1 mb-4">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+<span>2.1% vs last month</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-neon-lime rounded-full w-[80%]"></div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-card-bg border border-border-gray p-5 rounded-2xl">
+<p class="text-text-muted text-xs font-medium mb-1">Appointments booked</p>
+<h2 class="text-3xl font-bold mb-2">3,841</h2>
+<div class="flex items-center text-neon-lime text-xs space-x-1 mb-4">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+<span>8.7% vs last month</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-cyan-400 rounded-full w-[55%]"></div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-card-bg border border-border-gray p-5 rounded-2xl">
+<p class="text-text-muted text-xs font-medium mb-1">Collections resolved</p>
+<h2 class="text-3xl font-bold mb-2">₹2.4M</h2>
+<div class="flex items-center text-red-500 text-xs space-x-1 mb-4">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+<span>1.2% vs last month</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-red-500 rounded-full w-[30%]"></div>
+</div>
+</div>
+</section>
+<!-- END: Metric Cards Section -->
+<!-- BEGIN: Active Campaigns Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-semibold">Active campaigns</h3>
+<a class="text-text-muted text-xs flex items-center space-x-1 hover:text-white transition-colors" href="#">
+<span>View all</span>
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<div class="bg-card-bg border border-border-gray rounded-2xl overflow-hidden" data-purpose="campaign-table-container">
+<table class="w-full text-sm text-left border-collapse">
+<thead>
+<tr class="text-[10px] text-text-muted uppercase tracking-wider border-b border-border-gray">
+<th class="px-6 py-4 font-semibold">Campaign</th>
+<th class="px-6 py-4 font-semibold">Channels</th>
+<th class="px-6 py-4 font-semibold">Sent</th>
+<th class="px-6 py-4 font-semibold">Engaged</th>
+<th class="px-6 py-4 font-semibold">Status</th>
+<th class="px-6 py-4 font-semibold">Progress</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-gray/50">
+<!-- Row 1 -->
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4">
+<p class="font-medium">Q1 Appointment reminder</p>
+<p class="text-xs text-text-muted">Tamil · 12,400 contacts</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex space-x-1.5">
+<span class="px-2 py-0.5 bg-[#2A2A1A] text-neon-lime text-[10px] font-bold rounded-md border border-neon-lime/20">Voice</span>
+<span class="px-2 py-0.5 bg-blue-900/30 text-blue-400 text-[10px] font-bold rounded-md border border-blue-400/20">SMS</span>
+</div>
+</td>
+<td class="px-6 py-4 text-gray-300">9,820</td>
+<td class="px-6 py-4 text-gray-300">74%</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-[#232F1D] text-[#71C154] text-[10px] font-bold rounded-full border border-[#71C154]/20">Live</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-[#333] rounded-full">
+<div class="h-1.5 bg-neon-lime rounded-full w-[70%]"></div>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4">
+<p class="font-medium">EMI collection — Mar</p>
+<p class="text-xs text-text-muted">Tamil + English · 8,100 contacts</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col space-y-1">
+<div class="flex space-x-1.5">
+<span class="px-2 py-0.5 bg-[#2A2A1A] text-neon-lime text-[10px] font-bold rounded-md border border-neon-lime/20">Voice</span>
+</div>
+<div>
+<span class="px-2 py-0.5 bg-emerald-900/30 text-emerald-400 text-[10px] font-bold rounded-md border border-emerald-400/20">WhatsApp</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-gray-300">5,340</td>
+<td class="px-6 py-4 text-gray-300">61%</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-[#232F1D] text-[#71C154] text-[10px] font-bold rounded-full border border-[#71C154]/20">Live</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-[#333] rounded-full">
+<div class="h-1.5 bg-neon-lime rounded-full w-[55%]"></div>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4">
+<p class="font-medium">Insurance renewal outreach</p>
+<p class="text-xs text-text-muted">English · 4,200 contacts</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex space-x-1.5">
+<span class="px-2 py-0.5 bg-orange-900/30 text-orange-400 text-[10px] font-bold rounded-md border border-orange-400/20">Email</span>
+<span class="px-2 py-0.5 bg-blue-900/30 text-blue-400 text-[10px] font-bold rounded-md border border-blue-400/20">SMS</span>
+</div>
+</td>
+<td class="px-6 py-4 text-gray-300">2,100</td>
+<td class="px-6 py-4 text-gray-300">48%</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-orange-900/20 text-orange-400 text-[10px] font-bold rounded-full border border-orange-400/20">Paused</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-[#333] rounded-full">
+<div class="h-1.5 bg-neon-lime rounded-full w-[45%]"></div>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4">
+<p class="font-medium">CSAT survey — Feb batch</p>
+<p class="text-xs text-text-muted">Tamil · 6,000 contacts</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex space-x-1.5">
+<span class="px-2 py-0.5 bg-emerald-900/30 text-emerald-400 text-[10px] font-bold rounded-md border border-emerald-400/20">WhatsApp</span>
+</div>
+</td>
+<td class="px-6 py-4 text-gray-300">6,000</td>
+<td class="px-6 py-4 text-gray-300">82%</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 bg-gray-800 text-text-muted text-[10px] font-bold rounded-full border border-gray-600">Ended</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-[#333] rounded-full">
+<div class="h-1.5 bg-neon-lime rounded-full w-full"></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- END: Active Campaigns Section -->
+<!-- BEGIN: Lower Grid (Activity & Analytics) -->
+<section class="grid grid-cols-12 gap-6">
+<!-- Recent Activity Feed -->
+<div class="col-span-8 bg-card-bg border border-border-gray rounded-2xl p-6" data-purpose="activity-feed">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-semibold">Recent activity</h3>
+<a class="text-text-muted text-xs flex items-center space-x-1 hover:text-white transition-colors" href="#">
+<span>View all</span>
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<div class="space-y-6">
+<!-- Activity Item 1 -->
+<div class="flex space-x-4">
+<div class="mt-1.5 w-2 h-2 rounded-full bg-neon-lime shrink-0"></div>
+<div>
+<p class="text-sm">
+<span class="font-semibold">Q1 Appointment reminder</span> reached 9,820 contacts. Engagement at 74%.
+                </p>
+<p class="text-xs text-text-muted mt-1">2 minutes ago</p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex space-x-4">
+<div class="mt-1.5 w-2 h-2 rounded-full bg-blue-400 shrink-0"></div>
+<div>
+<p class="text-sm">
+<span class="font-semibold">Priya S.</span> replied via WhatsApp — appointment rescheduled to 15 Apr.
+                </p>
+<p class="text-xs text-text-muted mt-1">11 minutes ago</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex space-x-4">
+<div class="mt-1.5 w-2 h-2 rounded-full bg-orange-400 shrink-0"></div>
+<div>
+<p class="text-sm">
+<span class="font-semibold">EMI collection Mar</span> — ₹42,000 collected via payment link in last hour.
+                </p>
+<p class="text-xs text-text-muted mt-1">34 minutes ago</p>
+</div>
+</div>
+<!-- Activity Item 4 -->
+<div class="flex space-x-4">
+<div class="mt-1.5 w-2 h-2 rounded-full bg-gray-500 shrink-0"></div>
+<div>
+<p class="text-sm">
+<span class="font-semibold">Insurance renewal</span> paused by Arjun Kumar. Flow updated.
+                </p>
+<p class="text-xs text-text-muted mt-1">2 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side Stats -->
+<div class="col-span-4 space-y-6">
+<!-- Language Split Card -->
+<div class="bg-card-bg border border-border-gray rounded-2xl p-6" data-purpose="language-split">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-text-muted text-sm font-medium">Language split</h3>
+<p class="text-xl font-bold">2 langs</p>
+</div>
+<div class="space-y-4">
+<!-- Tamil -->
+<div>
+<div class="flex justify-between text-xs mb-1.5">
+<span class="text-text-muted">Tamil</span>
+<span>63%</span>
+</div>
+<div class="h-1.5 w-full bg-[#333] rounded-full">
+<div class="h-1.5 bg-neon-lime rounded-full w-[63%]"></div>
+</div>
+</div>
+<!-- English -->
+<div>
+<div class="flex justify-between text-xs mb-1.5">
+<span class="text-text-muted">English</span>
+<span>37%</span>
+</div>
+<div class="h-1.5 w-full bg-[#333] rounded-full">
+<div class="h-1.5 bg-cyan-400 rounded-full w-[37%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Channel Usage Card -->
+<div class="bg-card-bg border border-border-gray rounded-2xl p-6" data-purpose="channel-usage">
+<h3 class="text-text-muted text-sm font-medium mb-5">Channel usage</h3>
+<div class="space-y-4">
+<!-- Voice -->
+<div class="flex items-center space-x-3">
+<svg class="w-4 h-4 text-neon-lime" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div class="flex-1">
+<div class="flex justify-between text-[10px] text-text-muted mb-1">
+<span>Voice</span>
+<span>80%</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-neon-lime rounded-full w-[80%]"></div>
+</div>
+</div>
+</div>
+<!-- WhatsApp -->
+<div class="flex items-center space-x-3">
+<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div class="flex-1">
+<div class="flex justify-between text-[10px] text-text-muted mb-1">
+<span>WhatsApp</span>
+<span>61%</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-emerald-400 rounded-full w-[61%]"></div>
+</div>
+</div>
+</div>
+<!-- SMS -->
+<div class="flex items-center space-x-3">
+<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div class="flex-1">
+<div class="flex justify-between text-[10px] text-text-muted mb-1">
+<span>SMS</span>
+<span>44%</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-blue-400 rounded-full w-[44%]"></div>
+</div>
+</div>
+</div>
+<!-- Email -->
+<div class="flex items-center space-x-3">
+<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div class="flex-1">
+<div class="flex justify-between text-[10px] text-text-muted mb-1">
+<span>Email</span>
+<span>29%</span>
+</div>
+<div class="h-1 w-full bg-[#333] rounded-full">
+<div class="h-1 bg-orange-400 rounded-full w-[29%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Lower Grid -->
+</div>
+</main>
+<!-- END: Main Content Container -->
+</body></html>

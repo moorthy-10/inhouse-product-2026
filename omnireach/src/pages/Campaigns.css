@@ -1,0 +1,160 @@
+/* ============================================
+   CAMPAIGNS MANAGEMENT
+   ============================================ */
+
+.campaigns-container {
+  padding: 0 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  overflow: auto;
+}
+
+.campaigns-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 8px;
+}
+
+.campaigns-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.campaigns-subtitle {
+  color: var(--text-muted);
+  font-size: 1.125rem;
+}
+
+/* Stats Cards Grid */
+.campaigns-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.stat-card-icon-wrapper {
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+}
+
+/* Table Card */
+.campaign-table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.campaign-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.campaign-table thead {
+  background: rgba(255,255,255,0.02);
+}
+
+.campaign-table th {
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.campaign-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.campaign-table tr:last-child td {
+  border-bottom: none;
+}
+
+.campaign-info-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.campaign-name-text {
+  fontWeight: 600;
+  color: var(--text-primary);
+}
+
+.campaign-date-text {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Pagination */
+.pagination-container {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-gray);
+}
+
+/* ============================================
+   TAGS & PILLS (Shared logic often used here)
+   ============================================ */
+.tag-pill {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-voice {
+  background: rgba(201, 255, 31, 0.1);
+  color: var(--neon-lime);
+  border: 1px solid rgba(201, 255, 31, 0.2);
+}
+
+.tag-sms {
+  background: rgba(74, 158, 255, 0.1);
+  color: var(--accent-blue);
+  border: 1px solid rgba(74, 158, 255, 0.2);
+}
+
+.tag-whatsapp {
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.tag-email {
+  background: rgba(251, 146, 60, 0.1);
+  color: var(--accent-orange);
+  border: 1px solid rgba(251, 146, 60, 0.2);
+}
+
+/* Status Pill */
+.campaign-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  width: fit-content;
+  background: rgba(255,255,255,0.02);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}

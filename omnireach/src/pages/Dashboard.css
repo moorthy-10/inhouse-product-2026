@@ -1,0 +1,107 @@
+/* ============================================
+   METRIC CARDS
+   ============================================ */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.metric-label {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-family: 'Manrope', sans-serif;
+}
+
+.metric-change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  margin-bottom: 16px;
+}
+
+.metric-change.positive {
+  color: var(--neon-lime);
+}
+
+.metric-change.negative {
+  color: var(--accent-red);
+}
+
+/* ============================================
+   ACTIVITY FEED
+   ============================================ */
+.activity-item {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.activity-dot {
+  margin-top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.activity-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.activity-text strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ============================================
+   LOWER GRID & STATS
+   ============================================ */
+.lower-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-6);
+}
+
+.stats-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ============================================
+   CHANNEL USAGE
+   ============================================ */
+.channel-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.channel-bar-container {
+  flex: 1;
+}
+
+.channel-bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
