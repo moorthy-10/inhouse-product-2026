@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q1 Appointment Reminder Campaign</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f1117;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+  }
+
+  /* TOP NAV */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #13161e;
+    border-bottom: 1px solid #1e2333;
+    height: 52px;
+  }
+  .top-nav-left { display: flex; align-items: center; gap: 12px; }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px;
+    color: #9aa0b0; font-size: 13px; cursor: pointer;
+    padding: 5px 10px; border-radius: 6px;
+    border: 1px solid #2a2f3d;
+    background: transparent;
+    text-decoration: none;
+  }
+  .back-btn:hover { background: #1e2333; }
+  .campaign-title-nav { font-size: 15px; font-weight: 600; color: #fff; }
+  .campaign-sub { font-size: 12px; color: #6b7280; margin-top: 1px; }
+  .top-nav-right { display: flex; align-items: center; gap: 8px; }
+  .badge-live {
+    background: #1a2e1a; color: #4ade80; border: 1px solid #22c55e;
+    padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  }
+  .btn-outline {
+    background: transparent; color: #9aa0b0;
+    border: 1px solid #2a2f3d; padding: 5px 12px;
+    border-radius: 6px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .btn-outline:hover { background: #1e2333; color: #fff; }
+  .btn-pause {
+    background: #1e2333; color: #f59e0b;
+    border: 1px solid #2a2f3d; padding: 5px 12px;
+    border-radius: 6px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .btn-primary {
+    background: #c8f135; color: #0f1117;
+    border: none; padding: 6px 14px;
+    border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn-primary:hover { background: #d4f54a; }
+
+  /* MAIN CONTENT */
+  .main { padding: 20px; }
+
+  /* BREADCRUMB */
+  .breadcrumb { font-size: 12px; color: #6b7280; margin-bottom: 14px; }
+  .breadcrumb a { color: #6b7280; text-decoration: none; }
+  .breadcrumb a:hover { color: #9aa0b0; }
+  .breadcrumb span { color: #9aa0b0; }
+
+  /* HEADER + PROGRESS SECTION */
+  .header-section {
+    display: flex; gap: 16px; margin-bottom: 20px;
+  }
+  .header-left { flex: 1; }
+  .campaign-name { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .campaign-desc { font-size: 13px; color: #9aa0b0; margin-bottom: 12px; line-height: 1.5; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .tag {
+    padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    border: 1px solid transparent;
+  }
+  .tag-voice { background: #1a1f2e; color: #818cf8; border-color: #3730a3; }
+  .tag-whatsapp { background: #1a2b1a; color: #4ade80; border-color: #15803d; }
+  .tag-tamil { background: #1e1a2e; color: #a78bfa; border-color: #6d28d9; }
+  .tag-default { background: #1e2333; color: #9aa0b0; border-color: #2a2f3d; }
+  .meta-row { display: flex; gap: 32px; }
+  .meta-item label { font-size: 11px; color: #6b7280; display: block; margin-bottom: 3px; }
+  .meta-item span { font-size: 13px; color: #e2e8f0; }
+
+  /* PROGRESS CARD */
+  .progress-card {
+    background: #13161e; border: 1px solid #1e2333;
+    border-radius: 12px; padding: 18px 20px;
+    min-width: 300px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .progress-top { display: flex; align-items: center; gap: 16px; margin-bottom: 6px; }
+  .donut-wrap { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
+  .donut-wrap svg { width: 72px; height: 72px; transform: rotate(-90deg); }
+  .donut-bg { fill: none; stroke: #1e2333; stroke-width: 7; }
+  .donut-fg { fill: none; stroke: #c8f135; stroke-width: 7; stroke-linecap: round;
+    stroke-dasharray: 188.5; stroke-dashoffset: 39.6; }
+  .donut-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .donut-pct { font-size: 16px; font-weight: 700; color: #fff; line-height: 1; }
+  .donut-lbl { font-size: 9px; color: #6b7280; }
+  .progress-stats { flex: 1; }
+  .progress-row {
+    display: flex; justify-content: space-between; margin-bottom: 5px;
+  }
+  .progress-row .lbl { color: #9aa0b0; font-size: 13px; }
+  .progress-row .val { font-weight: 600; }
+  .val-yellow { color: #facc15; }
+  .val-gray { color: #6b7280; }
+
+  /* STATUS BARS */
+  .status-bars { border-top: 1px solid #1e2333; padding-top: 10px; }
+  .status-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 7px;
+  }
+  .status-row .s-label { width: 70px; font-size: 12px; color: #9aa0b0; }
+  .bar-track { flex: 1; height: 4px; background: #1e2333; border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+  .bar-confirmed { background: #c8f135; }
+  .bar-noreply { background: #6b7280; }
+  .bar-reschedule { background: #3b82f6; }
+  .bar-failed { background: #ef4444; }
+  .s-pct { width: 28px; text-align: right; font-size: 12px; color: #9aa0b0; }
+
+  /* KPI STRIP */
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 1px; background: #1e2333;
+    border: 1px solid #1e2333; border-radius: 10px; overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .kpi-cell {
+    background: #13161e; padding: 14px 16px;
+  }
+  .kpi-label { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+  .kpi-value { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .kpi-sub { font-size: 11px; }
+  .kpi-sub.green { color: #4ade80; }
+  .kpi-sub.gray { color: #6b7280; }
+  .kpi-sub.yellow { color: #facc15; }
+  .kpi-sub.red { color: #f87171; }
+  .arrow-up { color: #4ade80; margin-right: 2px; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #1e2333; margin-bottom: 20px; }
+  .tab {
+    padding: 10px 16px; font-size: 13px; color: #6b7280;
+    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab.active { color: #c8f135; border-bottom-color: #c8f135; font-weight: 600; }
+  .tab:hover:not(.active) { color: #9aa0b0; }
+  .tab-badge {
+    background: #2a2f3d; color: #9aa0b0; font-size: 11px;
+    padding: 1px 6px; border-radius: 10px; margin-left: 6px;
+  }
+
+  /* BOTTOM GRID */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* CARD */
+  .card {
+    background: #13161e; border: 1px solid #1e2333;
+    border-radius: 10px; padding: 18px 18px;
+  }
+  .card-title { font-size: 13px; color: #9aa0b0; margin-bottom: 16px; font-weight: 500; }
+  .card-title-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .card-title-row .card-title { margin-bottom: 0; }
+  .full-report { font-size: 12px; color: #9aa0b0; cursor: pointer; }
+  .full-report:hover { color: #c8f135; }
+
+  /* BAR CHART */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; margin-bottom: 8px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+  .bar-day {
+    width: 100%; border-radius: 3px 3px 0 0;
+    background: #c8f135; flex-shrink: 0;
+  }
+  .bar-partial { background: #4a5231; }
+  .bar-future { background: #1e2333; }
+  .day-label { font-size: 10px; color: #6b7280; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #6b7280; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* CONVERSION FUNNEL */
+  .funnel-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .funnel-label {
+    width: 72px; font-size: 12px; color: #fff; text-align: right;
+    padding: 3px 8px; border-radius: 4px; font-weight: 500;
+  }
+  .f-sent { background: #1a4a1a; color: #4ade80; }
+  .f-delivered { background: #1a3a4a; color: #60a5fa; }
+  .f-engaged { background: #2a2a1a; color: #fbbf24; }
+  .f-confirmed { background: #1a2a4a; color: #818cf8; }
+  .f-rescheduled { background: #2a2020; color: #f87171; }
+  .funnel-bar-wrap { flex: 1; }
+  .funnel-bar-bg { height: 20px; background: #1e2333; border-radius: 3px; overflow: hidden; }
+  .funnel-bar-inner { height: 100%; border-radius: 3px; }
+  .fb-sent { background: rgba(74,222,128,0.5); }
+  .fb-delivered { background: rgba(96,165,250,0.5); }
+  .fb-engaged { background: rgba(251,191,36,0.5); }
+  .fb-confirmed { background: rgba(129,140,248,0.5); }
+  .fb-rescheduled { background: rgba(248,113,113,0.5); }
+  .funnel-count { width: 36px; text-align: right; font-size: 12px; color: #e2e8f0; font-weight: 600; }
+  .funnel-pct { width: 28px; text-align: right; font-size: 12px; color: #6b7280; }
+
+  /* CHANNEL BREAKDOWN */
+  .channel-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .channel-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .icon-voice { background: #1a2233; }
+  .icon-wa { background: #1a2b1a; }
+  .channel-info { flex: 1; }
+  .channel-name { font-size: 13px; color: #e2e8f0; font-weight: 500; margin-bottom: 5px; }
+  .channel-bar-track { height: 6px; background: #1e2333; border-radius: 3px; overflow: hidden; }
+  .channel-bar-fill { height: 6px; border-radius: 3px; }
+  .channel-stats { text-align: right; min-width: 80px; }
+  .channel-count { font-size: 13px; color: #fff; font-weight: 600; }
+  .channel-pct { font-size: 11px; color: #6b7280; }
+  .fallback-section { border-top: 1px solid #1e2333; padding-top: 12px; margin-top: 4px; }
+  .fallback-label { font-size: 11px; color: #6b7280; margin-bottom: 6px; }
+  .fallback-bar-track { height: 6px; background: #1e2333; border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
+  .fallback-bar-fill { height: 100%; width: 22%; background: #c8f135; border-radius: 3px; }
+  .fallback-text { font-size: 11px; color: #9aa0b0; }
+
+  /* SCHEDULE */
+  .config-row {
+    display: flex; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid #1e2333; font-size: 13px;
+  }
+  .config-row:last-child { border-bottom: none; }
+  .config-key { color: #9aa0b0; }
+  .config-val { color: #e2e8f0; text-align: right; }
+  .config-val.green { color: #4ade80; }
+  .config-val.yellow { color: #fbbf24; }
+  .config-val.purple { color: #a78bfa; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <div class="top-nav-left">
+    <a class="back-btn" href="#">← Campaigns</a>
+    <div>
+      <div class="campaign-title-nav">Q1 Appointment reminder</div>
+      <div class="campaign-sub">Created by Arjun Kumar · Started 3 days ago</div>
+    </div>
+  </div>
+  <div class="top-nav-right">
+    <span class="badge-live">● Live</span>
+    <button class="btn-outline">⬆ Export</button>
+    <button class="btn-outline">⧉ Duplicate</button>
+    <button class="btn-pause">⏸ Pause</button>
+    <button class="btn-primary">Edit campaign</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="#">Campaigns</a> / <span>Q1 Appointment reminder</span>
+  </div>
+
+  <!-- HEADER + PROGRESS -->
+  <div class="header-section">
+    <div class="header-left">
+      <div class="campaign-name">Q1 Appointment reminder</div>
+      <div class="campaign-desc">Outbound campaign targeting 12,400 Tamil-speaking customers for their upcoming appointment confirmations. Uses voice-first with WhatsApp fallback.</div>
+      <div class="tags">
+        <span class="tag tag-voice">Voice</span>
+        <span class="tag tag-whatsapp">WhatsApp</span>
+        <span class="tag tag-tamil">Tamil</span>
+        <span class="tag tag-default">Appointment</span>
+        <span class="tag tag-default">Q1 2025</span>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item">
+          <label>Start date</label>
+          <span>18 Apr 2025</span>
+        </div>
+        <div class="meta-item">
+          <label>End date</label>
+          <span>25 Apr 2025</span>
+        </div>
+        <div class="meta-item">
+          <label>Time window</label>
+          <span>9am – 6pm IST</span>
+        </div>
+        <div class="meta-item">
+          <label>Created by</label>
+          <span>Arjun Kumar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS CARD -->
+    <div class="progress-card">
+      <div class="progress-top">
+        <div class="donut-wrap">
+          <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+            <circle class="donut-bg" cx="36" cy="36" r="30"/>
+            <circle class="donut-fg" cx="36" cy="36" r="30"/>
+          </svg>
+          <div class="donut-text">
+            <div class="donut-pct">79%</div>
+            <div class="donut-lbl">complete</div>
+          </div>
+        </div>
+        <div class="progress-stats">
+          <div class="progress-row">
+            <span class="lbl">Total contacts</span>
+            <span class="val" style="color:#e2e8f0">12,400</span>
+          </div>
+          <div class="progress-row">
+            <span class="lbl">Sent</span>
+            <span class="val val-yellow">9,820</span>
+          </div>
+          <div class="progress-row">
+            <span class="lbl">Remaining</span>
+            <span class="val" style="color:#e2e8f0">2,580</span>
+          </div>
+          <div class="progress-row">
+            <span class="lbl">Skipped</span>
+            <span class="val val-gray">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="status-bars">
+        <div class="status-row">
+          <span class="s-label">Confirmed</span>
+          <div class="bar-track"><div class="bar-fill bar-confirmed" style="width:74%"></div></div>
+          <span class="s-pct">74%</span>
+        </div>
+        <div class="status-row">
+          <span class="s-label">No reply</span>
+          <div class="bar-track"><div class="bar-fill bar-noreply" style="width:18%"></div></div>
+          <span class="s-pct">18%</span>
+        </div>
+        <div class="status-row">
+          <span class="s-label">Reschedule</span>
+          <div class="bar-track"><div class="bar-fill bar-reschedule" style="width:6%"></div></div>
+          <span class="s-pct">6%</span>
+        </div>
+        <div class="status-row">
+          <span class="s-label">Failed</span>
+          <div class="bar-track"><div class="bar-fill bar-failed" style="width:2%"></div></div>
+          <span class="s-pct">2%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi-cell">
+      <div class="kpi-label">Sent</div>
+      <div class="kpi-value">9,820</div>
+      <div class="kpi-sub gray">79% of total</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">Delivered</div>
+      <div class="kpi-value">9,612</div>
+      <div class="kpi-sub green">97.9% delivery</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">Engaged</div>
+      <div class="kpi-value">7,276</div>
+      <div class="kpi-sub green">74% engagement</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">Confirmed</div>
+      <div class="kpi-value">5,880</div>
+      <div class="kpi-sub green"><span class="arrow-up">↑</span>60% conv. rate</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">Rescheduled</div>
+      <div class="kpi-value">592</div>
+      <div class="kpi-sub gray">6% rescheduled</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">Failed</div>
+      <div class="kpi-value">208</div>
+      <div class="kpi-sub red">2.1% fail rate</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active">Overview</div>
+    <div class="tab">Contacts <span class="tab-badge">12,400</span></div>
+    <div class="tab">Messages <span class="tab-badge">9</span></div>
+    <div class="tab">Settings</div>
+  </div>
+
+  <!-- BOTTOM GRID -->
+  <div class="bottom-grid">
+
+    <!-- Messages sent by day -->
+    <div class="card">
+      <div class="card-title-row">
+        <span class="card-title">Messages sent by day</span>
+        <span class="full-report">Full report →</span>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-col">
+          <div class="bar-day bar-partial" style="height:44px;"></div>
+          <span class="day-label">18</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-day" style="height:62px;"></div>
+          <span class="day-label">19</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-day" style="height:76px;"></div>
+          <span class="day-label">20</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-day" style="height:68px;"></div>
+          <span class="day-label">21</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-day bar-partial" style="height:30px;"></div>
+          <span class="day-label">22</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-day bar-future" style="height:20px;"></div>
+          <span class="day-label">23</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-day bar-future" style="height:20px;"></div>
+          <span class="day-label">24</span>
+        </div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#c8f135;"></div>
+          Sent
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#4a5231;"></div>
+          Partial day
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversion Funnel -->
+    <div class="card">
+      <div class="card-title">Conversion funnel</div>
+      <div class="funnel-row">
+        <span class="funnel-label f-sent">Sent</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar-bg"><div class="funnel-bar-inner fb-sent" style="width:100%"></div></div>
+        </div>
+        <span class="funnel-count">9,820</span>
+        <span class="funnel-pct">100%</span>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label f-delivered">Delivered</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar-bg"><div class="funnel-bar-inner fb-delivered" style="width:97%"></div></div>
+        </div>
+        <span class="funnel-count">9,612</span>
+        <span class="funnel-pct">97%</span>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label f-engaged">Engaged</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar-bg"><div class="funnel-bar-inner fb-engaged" style="width:74%"></div></div>
+        </div>
+        <span class="funnel-count">7,276</span>
+        <span class="funnel-pct">74%</span>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label f-confirmed">Confirmed</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar-bg"><div class="funnel-bar-inner fb-confirmed" style="width:60%"></div></div>
+        </div>
+        <span class="funnel-count">5,880</span>
+        <span class="funnel-pct">60%</span>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label f-rescheduled">Reschedu...</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar-bg"><div class="funnel-bar-inner fb-rescheduled" style="width:6%"></div></div>
+        </div>
+        <span class="funnel-count">592</span>
+        <span class="funnel-pct">6%</span>
+      </div>
+    </div>
+
+    <!-- Channel breakdown -->
+    <div class="card">
+      <div class="card-title">Channel breakdown</div>
+      <div class="channel-row">
+        <div class="channel-icon icon-voice">📞</div>
+        <div class="channel-info">
+          <div class="channel-name">Voice</div>
+          <div class="channel-bar-track">
+            <div class="channel-bar-fill" style="width:78%;background:#c8f135;"></div>
+          </div>
+        </div>
+        <div class="channel-stats">
+          <div class="channel-count">7,660</div>
+          <div class="channel-pct">Sent &nbsp;&nbsp; 78% Engmnt</div>
+        </div>
+      </div>
+      <div class="channel-row">
+        <div class="channel-icon icon-wa">💬</div>
+        <div class="channel-info">
+          <div class="channel-name">WhatsApp</div>
+          <div class="channel-bar-track">
+            <div class="channel-bar-fill" style="width:62%;background:#4ade80;"></div>
+          </div>
+        </div>
+        <div class="channel-stats">
+          <div class="channel-count">2,160</div>
+          <div class="channel-pct">Sent &nbsp;&nbsp; 62% Engmnt</div>
+        </div>
+      </div>
+      <div class="fallback-section">
+        <div class="fallback-label">Fallback trigger rate</div>
+        <div class="fallback-bar-track">
+          <div class="fallback-bar-fill"></div>
+        </div>
+        <div class="fallback-text">22% escalated to WhatsApp after no voice reply</div>
+      </div>
+    </div>
+
+    <!-- Schedule & configuration -->
+    <div class="card">
+      <div class="card-title">Schedule &amp; configuration</div>
+      <div class="config-row">
+        <span class="config-key">Campaign type</span>
+        <span class="config-val">Appointment confirmation</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Calling window</span>
+        <span class="config-val">9:00am – 6:00pm IST</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Retry attempts</span>
+        <span class="config-val">2 retries · 4hr gap</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Fallback channel</span>
+        <span class="config-val green">WhatsApp after 30 min</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Language</span>
+        <span class="config-val purple">Tamil (primary)</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Do-not-disturb</span>
+        <span class="config-val">Weekends excluded</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

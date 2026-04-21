@@ -28,7 +28,6 @@ const navSections = [
       { label: 'Dashboard', icon: LayoutGrid, to: '/' },
       { label: 'Campaigns', icon: ClipboardList, to: '/campaigns', badge: 3 },
       { label: 'Conversations', icon: MessageSquare, to: '/conversations' },
-      { label: 'Contacts', icon: Users, to: '/contacts' },
     ],
   },
   {
@@ -54,8 +53,8 @@ export default function Sidebar() {
 
   return (
     <>
-      <button 
-        className="mobile-menu-btn" 
+      <button
+        className="mobile-menu-btn"
         style={{ position: 'fixed', top: 20, left: 20, zIndex: 100 }}
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -65,10 +64,10 @@ export default function Sidebar() {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         {/* Logo */}
         <div className="sidebar-logo">
-          <div className="sidebar-logo-icon" style={{ borderRadius: '4px' }}>
-            <div style={{ width: 14, height: 14, border: '3px solid #000', borderRadius: '2px' }} />
+          <div className="sidebar-logo-icon" style={{ borderRadius: '6px', background: 'var(--neon-lime)', display: 'flex', alignItems: 'center', justifyCenter: 'center', width: 32, height: 32 }}>
+            <CircleDot size={18} strokeWidth={3} color="#000" />
           </div>
-          <span className="sidebar-logo-text" style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#fff' }}>Omnireach</span>
+          <span className="sidebar-logo-text" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', tracking: '-0.02em' }}>GenLab</span>
         </div>
 
         {/* Navigation */}
@@ -120,13 +119,13 @@ export default function Sidebar() {
 
       {/* Backdrop for mobile */}
       {isOpen && (
-        <div 
-          style={{ 
-            position: 'fixed', 
-            inset: 0, 
-            background: 'rgba(0,0,0,0.5)', 
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
             backdropFilter: 'blur(4px)',
-            zIndex: 45 
+            zIndex: 45
           }}
           onClick={() => setIsOpen(false)}
         />

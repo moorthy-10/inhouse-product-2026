@@ -1,7 +1,5 @@
+import { Link } from 'react-router-dom';
 import {
-  Search,
-  Bell,
-  Sun,
   Plus,
   ChevronUp,
   ChevronDown,
@@ -26,25 +24,7 @@ const campaigns = [
     meta: 'Tamil · 12,400 contacts',
     channels: [{ label: 'Voice', type: 'voice' }, { label: 'SMS', type: 'sms' }],
     sent: '9,820', engaged: '74%', status: 'Live', progress: 70,
-  },
-  {
-    name: 'EMI collection — Mar',
-    meta: 'Tamil + English · 8,100 contacts',
-    channels: [{ label: 'Voice', type: 'voice' }, { label: 'WhatsApp', type: 'whatsapp' }],
-    sent: '5,340', engaged: '61%', status: 'Live', progress: 55,
-  },
-  {
-    name: 'Insurance renewal outreach',
-    meta: 'English · 4,200 contacts',
-    channels: [{ label: 'Email', type: 'email' }, { label: 'SMS', type: 'sms' }],
-    sent: '2,100', engaged: '48%', status: 'Paused', progress: 45,
-  },
-  {
-    name: 'CSAT survey — Feb batch',
-    meta: 'Tamil · 6,000 contacts',
-    channels: [{ label: 'WhatsApp', type: 'whatsapp' }],
-    sent: '6,000', engaged: '82%', status: 'Ended', progress: 100,
-  },
+  }
 ];
 
 const activities = [
@@ -70,22 +50,10 @@ function getStatusClass(status) {
 export default function Dashboard() {
   return (
     <div className="main-content">
-      {/* Header */}
       <header className="page-header">
         <h1 className="page-title">Dashboard</h1>
         <div className="header-actions">
-          <div className="search-container">
-            <Search className="search-icon" size={16} />
-            <input className="search-input" type="text" placeholder="Search campaigns, contacts..." />
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="icon-btn"><Bell size={20} /></button>
-            <button className="icon-btn"><Sun size={20} /></button>
-          </div>
-          <button className="btn-primary">
-            <Plus size={16} />
-            <span>New campaign</span>
-          </button>
+
         </div>
       </header>
 
@@ -133,8 +101,10 @@ export default function Dashboard() {
                 {campaigns.map((c, i) => (
                   <tr key={i}>
                     <td>
-                      <p className="campaign-name">{c.name}</p>
-                      <p className="campaign-meta">{c.meta}</p>
+                      <Link to="/campaigns/details" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                        <p className="campaign-name">{c.name}</p>
+                        <p className="campaign-meta">{c.meta}</p>
+                      </Link>
                     </td>
                     <td>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>

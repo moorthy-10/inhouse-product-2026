@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule Campaign</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a1a; color: #e0e0e0; font-size: 13px; }
+
+  /* TOP NAV */
+  .top-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #111; border-bottom: 1px solid #2a2a2a;
+    padding: 10px 20px; position: sticky; top: 0; z-index: 100;
+  }
+  .top-nav-left { display: flex; align-items: center; gap: 12px; }
+  .back-btn { color: #aaa; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .back-btn::before { content: '‹'; font-size: 16px; }
+  .page-title h2 { font-size: 15px; font-weight: 600; color: #fff; }
+  .page-title p { font-size: 11px; color: #888; margin-top: 1px; }
+  .top-nav-right { display: flex; gap: 10px; }
+  .btn-draft { background: #2a2a2a; border: 1px solid #3a3a3a; color: #ccc; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+  .btn-publish { background: #c8ff00; border: none; color: #111; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+  .btn-publish::before { content: '✓'; }
+
+  /* STEPPER */
+  .stepper {
+    background: #111; border-bottom: 1px solid #2a2a2a;
+    display: flex; align-items: center; padding: 0 20px; height: 44px;
+  }
+  .step { display: flex; align-items: center; gap: 8px; padding: 0 16px; height: 100%; position: relative; }
+  .step-num { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+  .step.active .step-num { background: #c8ff00; color: #111; }
+  .step.done .step-num { background: #c8ff00; color: #111; }
+  .step.inactive .step-num { background: #2a2a2a; color: #666; border: 1px solid #3a3a3a; }
+  .step-label { font-size: 12px; color: #ccc; }
+  .step.inactive .step-label { color: #555; }
+  .step-line { flex: 1; height: 1px; background: #2a2a2a; margin: 0 4px; }
+  .step-line.done { background: #c8ff00; }
+
+  /* LAYOUT */
+  .main-layout { display: flex; gap: 0; min-height: calc(100vh - 44px - 50px); }
+  .content-area { flex: 1; padding: 20px; overflow-y: auto; max-width: calc(100% - 290px); }
+  .sidebar { width: 290px; background: #141414; border-left: 1px solid #2a2a2a; padding: 16px; overflow-y: auto; }
+
+  /* CARDS */
+  .card { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #2a2a2a; }
+  .card-header-left { display: flex; align-items: center; gap: 10px; }
+  .card-icon { width: 28px; height: 28px; background: #2a3a1a; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .card-title { font-size: 13px; font-weight: 600; color: #fff; }
+  .card-subtitle { font-size: 11px; color: #666; }
+  .badge-completed { background: #1a3a1a; color: #6dbf6d; border: 1px solid #2a5a2a; padding: 3px 10px; border-radius: 20px; font-size: 11px; }
+  .card-body { padding: 16px; }
+
+  /* FORM */
+  .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .form-group { flex: 1; }
+  .form-group label { display: block; font-size: 11px; color: #888; margin-bottom: 5px; }
+  .form-group label span { color: #e05050; }
+  .form-control { width: 100%; background: #141414; border: 1px solid #2a2a2a; border-radius: 6px; padding: 8px 12px; color: #e0e0e0; font-size: 12px; outline: none; }
+  .form-control:focus { border-color: #c8ff00; }
+  textarea.form-control { resize: vertical; min-height: 56px; }
+
+  /* LANGUAGE TOGGLE */
+  .lang-toggle { display: flex; gap: 0; border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; }
+  .lang-btn { flex: 1; padding: 7px 12px; background: #141414; border: none; color: #888; font-size: 12px; cursor: pointer; }
+  .lang-btn.active { background: #2a3a0a; color: #c8ff00; border: 1px solid #5a7a0a; border-radius: 5px; }
+
+  /* FLOW CONFIG */
+  .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .channel-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 8px; padding: 14px; position: relative; }
+  .channel-card.active { border-color: #4a5a2a; background: #1a2a0a; }
+  .channel-check { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; background: #c8ff00; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #111; font-weight: bold; }
+  .channel-icon { font-size: 20px; margin-bottom: 6px; }
+  .channel-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .channel-provider { font-size: 11px; color: #666; margin-top: 2px; }
+  .channel-priority { display: flex; gap: 5px; margin-top: 10px; }
+  .priority-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; border: 1px solid #3a3a3a; color: #888; background: #1e1e1e; }
+  .priority-badge.active { background: #2a3a0a; color: #c8ff00; border-color: #5a7a0a; }
+  .channel-error { color: #e05050; font-size: 10px; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+  .channel-error::before { content: '⊗'; }
+
+  /* FALLBACK TRIGGER */
+  .fallback-row { display: flex; align-items: center; gap: 0; margin-top: 2px; }
+  .fallback-label { font-size: 11px; color: #666; margin-bottom: 8px; }
+  .time-btns { display: flex; gap: 0; }
+  .time-btn { padding: 7px 14px; background: #141414; border: 1px solid #2a2a2a; color: #888; font-size: 12px; cursor: pointer; }
+  .time-btn:first-child { border-radius: 6px 0 0 6px; }
+  .time-btn:last-child { border-radius: 0 6px 6px 0; }
+  .time-btn.active { background: #2a3a0a; color: #c8ff00; border-color: #5a7a0a; }
+
+  /* CALENDAR */
+  .calendar-timing-row { display: flex; gap: 16px; }
+  .calendar-wrap { flex: 1; }
+  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .calendar-month { font-size: 13px; font-weight: 600; color: #fff; }
+  .cal-nav { background: none; border: none; color: #888; cursor: pointer; font-size: 16px; padding: 2px 6px; }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-day-name { text-align: center; font-size: 10px; color: #555; padding: 4px 0; }
+  .cal-day { text-align: center; padding: 5px 2px; font-size: 11px; color: #888; border-radius: 4px; cursor: pointer; }
+  .cal-day.in-range { background: #2a3a0a; color: #c8ff00; }
+  .cal-day.start, .cal-day.end { background: #c8ff00; color: #111; font-weight: 600; }
+  .cal-day.today { border: 1px solid #c8ff00; color: #c8ff00; }
+  .cal-day.empty { visibility: hidden; }
+  .date-inputs { display: flex; flex-direction: column; gap: 10px; min-width: 160px; }
+  .date-input-group label { font-size: 11px; color: #888; display: block; margin-bottom: 4px; }
+  .date-input-group input { width: 100%; background: #2a3a0a; border: 1px solid #4a6a1a; border-radius: 6px; padding: 8px 12px; color: #c8ff00; font-size: 12px; outline: none; }
+  .date-note { font-size: 11px; color: #555; margin-top: 6px; }
+
+  /* TIME ROW */
+  .time-row { display: flex; gap: 12px; margin: 14px 0; }
+  .time-group { flex: 1; }
+  .time-group label { font-size: 11px; color: #888; display: block; margin-bottom: 4px; }
+  .time-display { background: #141414; border: 1px solid #2a2a2a; border-radius: 6px; padding: 8px 12px; }
+  .time-display .time-val { font-size: 16px; font-weight: 600; color: #fff; }
+  .time-display .time-note { font-size: 10px; color: #555; margin-top: 1px; }
+
+  /* RETRY */
+  .retry-row { background: #141414; border: 1px solid #2a2a2a; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .retry-text { font-size: 12px; color: #aaa; }
+
+  /* ACTIVE DAYS */
+  .active-days { display: flex; gap: 6px; margin: 12px 0; }
+  .day-pill { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; cursor: pointer; background: #2a3a0a; color: #c8ff00; border: 1px solid #4a6a1a; }
+  .day-pill.inactive { background: #1e1e1e; color: #555; border-color: #2a2a2a; }
+
+  /* TOGGLE ROW */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222; }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 13px; color: #ccc; }
+  .toggle-sub { font-size: 11px; color: #555; margin-top: 2px; }
+  .toggle { position: relative; width: 38px; height: 20px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: #2a2a2a; border-radius: 20px; cursor: pointer; transition: .3s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: #888; border-radius: 50%; transition: .3s; }
+  input:checked + .toggle-slider { background: #c8ff00; }
+  input:checked + .toggle-slider::before { transform: translateX(18px); background: #111; }
+
+  /* AUDIENCE */
+  .audience-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .audience-item { background: #141414; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .audience-item:hover { border-color: #3a3a3a; }
+  .audience-item-left { display: flex; align-items: center; gap: 10px; }
+  .audience-avatar { width: 32px; height: 32px; border-radius: 50%; background: #2a3a1a; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .audience-name { font-size: 13px; color: #fff; }
+  .audience-sub { font-size: 11px; color: #555; margin-top: 2px; }
+  .audience-count { font-size: 13px; font-weight: 600; color: #888; }
+  .audience-actions { display: flex; gap: 10px; margin-bottom: 12px; }
+  .btn-outline { flex: 1; background: #1e1e1e; border: 1px solid #2a2a2a; color: #aaa; padding: 9px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; text-align: center; }
+  .btn-outline:hover { border-color: #c8ff00; color: #c8ff00; }
+
+  /* EXCLUSION / DND */
+  .dnd-tag { background: #1e1e1e; border: 1px dashed #3a3a3a; border-radius: 6px; padding: 8px 14px; font-size: 12px; color: #666; display: inline-block; margin-bottom: 10px; }
+  .warning-box { background: #2a1a0a; border: 1px solid #5a3a1a; border-radius: 6px; padding: 10px 14px; display: flex; align-items: flex-start; gap: 8px; }
+  .warning-box .warn-icon { color: #e0a050; font-size: 14px; margin-top: 1px; }
+  .warning-box .warn-title { font-size: 12px; color: #e0a050; font-weight: 600; }
+  .warning-box .warn-text { font-size: 11px; color: #888; margin-top: 3px; }
+
+  /* SIDEBAR */
+  .sidebar-title { font-size: 10px; letter-spacing: 1px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+  .preview-name { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .preview-sub { font-size: 11px; color: #666; margin-bottom: 14px; }
+  .preview-online { width: 8px; height: 8px; background: #c8ff00; border-radius: 50%; display: inline-block; margin-left: 6px; }
+  .preview-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #222; }
+  .preview-row:last-of-type { border-bottom: none; }
+  .preview-key { font-size: 11px; color: #666; }
+  .preview-val { font-size: 11px; color: #ccc; text-align: right; }
+  .preview-val.green { color: #6dbf6d; }
+
+  /* CHANNEL PRIORITY SIDEBAR */
+  .ch-priority-section { margin: 14px 0; }
+  .ch-priority-title { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .ch-priority-item { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 8px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .ch-priority-item .ch-name { font-size: 12px; color: #ccc; flex: 1; }
+  .ch-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #2a3a0a; color: #c8ff00; }
+  .ch-badge.fallback { background: #2a2a3a; color: #888; }
+
+  /* ESTIMATED REACH */
+  .reach-section { margin: 14px 0; }
+  .reach-num { font-size: 26px; font-weight: 700; color: #fff; }
+  .reach-sub { font-size: 11px; color: #555; margin-top: 2px; }
+  .reach-bar { height: 6px; background: #2a2a2a; border-radius: 3px; margin: 10px 0; }
+  .reach-bar-fill { height: 100%; background: #c8ff00; border-radius: 3px; width: 62%; }
+
+  /* TIMELINE */
+  .timeline { margin: 14px 0; }
+  .timeline-item { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; position: relative; }
+  .timeline-item::before { content: ''; position: absolute; left: 6px; top: 20px; bottom: -6px; width: 1px; background: #2a2a2a; }
+  .timeline-item:last-child::before { display: none; }
+  .tl-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+  .tl-dot.green { background: #6dbf6d; }
+  .tl-dot.yellow { background: #c8ff00; }
+  .tl-dot.gray { background: #3a3a3a; border: 1px solid #4a4a4a; }
+  .tl-label { font-size: 11px; color: #aaa; }
+  .tl-sub { font-size: 10px; color: #555; margin-top: 2px; }
+
+  /* WARNING SIDEBAR */
+  .sidebar-warn { background: #2a1a0a; border: 1px solid #4a3a1a; border-radius: 6px; padding: 10px 12px; margin-top: 14px; }
+  .sidebar-warn .warn-head { font-size: 11px; color: #e0a050; display: flex; align-items: center; gap: 5px; font-weight: 600; }
+  .sidebar-warn .warn-body { font-size: 10px; color: #888; margin-top: 6px; line-height: 1.5; }
+
+  /* BOTTOM BAR */
+  .bottom-bar { background: #111; border-top: 1px solid #2a2a2a; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; bottom: 0; z-index: 100; }
+  .bottom-info { font-size: 11px; color: #555; }
+  .bottom-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-back { background: #1e1e1e; border: 1px solid #2a2a2a; color: #aaa; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+  .btn-schedule { background: #c8ff00; border: none; color: #111; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+  .btn-schedule::before { content: '📅'; font-size: 12px; }
+
+  /* SECTION DIVIDER */
+  .section-label { font-size: 11px; color: #555; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <div class="top-nav-left">
+    <div class="back-btn">Schedule</div>
+    <div class="page-title">
+      <h2>Schedule campaign</h2>
+      <p>Configure timing, channels, and audience for your campaign run</p>
+    </div>
+  </div>
+  <div class="top-nav-right">
+    <button class="btn-draft">Save as draft</button>
+    <button class="btn-publish">Publish now</button>
+  </div>
+</div>
+
+<!-- STEPPER -->
+<div class="stepper">
+  <div class="step done">
+    <div class="step-num">✓</div>
+    <span class="step-label">Campaign</span>
+  </div>
+  <div class="step-line done"></div>
+  <div class="step active">
+    <div class="step-num">2</div>
+    <span class="step-label">Select Flow</span>
+  </div>
+  <div class="step-line"></div>
+  <div class="step inactive">
+    <div class="step-num">3</div>
+    <span class="step-label">Contact</span>
+  </div>
+  <div class="step-line"></div>
+  <div class="step inactive">
+    <div class="step-num">4</div>
+    <span class="step-label">Schedule</span>
+  </div>
+  <div class="step-line"></div>
+  <div class="step inactive">
+    <div class="step-num">5</div>
+    <span class="step-label">Review</span>
+  </div>
+</div>
+
+<div class="main-layout">
+
+  <!-- CONTENT AREA -->
+  <div class="content-area">
+
+    <!-- Campaign Details Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">📋</div>
+          <div>
+            <div class="card-title">Campaign details</div>
+            <div class="card-subtitle">Basic information about this campaign run</div>
+          </div>
+        </div>
+        <span class="badge-completed">Completed</span>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Campaign name <span>*</span></label>
+            <input class="form-control" type="text" value="Q1 Appointment reminder — Apr batch">
+          </div>
+          <div class="form-group">
+            <label>Campaign type <span>*</span></label>
+            <input class="form-control" type="text" value="Appointment confirmation">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>Description</label>
+          <textarea class="form-control">Outbound appointment confirmations for Tamil-speaking customers with voice-first, WhatsApp fallback.</textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Language <span>*</span></label>
+            <div class="lang-toggle">
+              <button class="lang-btn active">Tamil</button>
+              <button class="lang-btn">English</button>
+              <button class="lang-btn">Both</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Flow template <span>*</span></label>
+            <input class="form-control" type="text" value="Appt. confirm — voice + WA fallback">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow Configuration Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">⚙️</div>
+          <div>
+            <div class="card-title">Flow configuration</div>
+            <div class="card-subtitle">Choose channels and set priority order</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="channel-grid">
+          <!-- Voice -->
+          <div class="channel-card active">
+            <div class="channel-check">✓</div>
+            <div class="channel-icon">📞</div>
+            <div class="channel-name">Voice</div>
+            <div class="channel-provider">Outbound IVR call · Twilio</div>
+            <div class="channel-priority">
+              <span class="priority-badge active">1st</span>
+              <span class="priority-badge">2nd</span>
+              <span class="priority-badge">3rd</span>
+            </div>
+          </div>
+          <!-- WhatsApp -->
+          <div class="channel-card active">
+            <div class="channel-check">✓</div>
+            <div class="channel-icon">💬</div>
+            <div class="channel-name">WhatsApp</div>
+            <div class="channel-provider">Business API · Meta</div>
+            <div class="channel-priority">
+              <span class="priority-badge">1st</span>
+              <span class="priority-badge active">2nd</span>
+              <span class="priority-badge">3rd</span>
+            </div>
+          </div>
+          <!-- SMS -->
+          <div class="channel-card">
+            <div class="channel-icon">💬</div>
+            <div class="channel-name">SMS</div>
+            <div class="channel-provider">Transactional · Airtel</div>
+            <div class="channel-priority">
+              <span class="priority-badge">1st</span>
+              <span class="priority-badge">2nd</span>
+              <span class="priority-badge">3rd</span>
+            </div>
+          </div>
+          <!-- Email -->
+          <div class="channel-card">
+            <div class="channel-icon">✉️</div>
+            <div class="channel-name">Email</div>
+            <div class="channel-provider">SendGrid · Not connected</div>
+            <div class="channel-priority">
+              <span class="priority-badge">1st</span>
+              <span class="priority-badge">2nd</span>
+              <span class="priority-badge">3rd</span>
+            </div>
+            <div class="channel-error">Connect in Settings first</div>
+          </div>
+        </div>
+
+        <div class="fallback-label">Fallback trigger — escalate to next channel after</div>
+        <div class="time-btns">
+          <button class="time-btn active">30 min</button>
+          <button class="time-btn">1 hr</button>
+          <button class="time-btn">2 hr</button>
+          <button class="time-btn">4 hr</button>
+          <button class="time-btn">Custom</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timing & Schedule Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">🕐</div>
+          <div>
+            <div class="card-title">Timing &amp; schedule</div>
+            <div class="card-subtitle">Set date range, calling window, and retry rules</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="calendar-timing-row">
+          <!-- Calendar -->
+          <div class="calendar-wrap">
+            <div class="calendar-header">
+              <span class="calendar-month">April 2025</span>
+              <div>
+                <button class="cal-nav">‹</button>
+                <button class="cal-nav">›</button>
+              </div>
+            </div>
+            <div class="calendar-grid">
+              <div class="cal-day-name">S</div><div class="cal-day-name">M</div><div class="cal-day-name">T</div><div class="cal-day-name">W</div><div class="cal-day-name">T</div><div class="cal-day-name">F</div><div class="cal-day-name">S</div>
+              <!-- Week 1 -->
+              <div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div>
+              <!-- Week 2 -->
+              <div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div>
+              <!-- Week 3 -->
+              <div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div>
+              <!-- Week 4 (22 = start, highlighted range) -->
+              <div class="cal-day">20</div><div class="cal-day today">21</div><div class="cal-day start">22</div><div class="cal-day in-range">23</div><div class="cal-day in-range">24</div><div class="cal-day in-range">25</div><div class="cal-day in-range">26</div>
+              <!-- Week 5 (27 = end) -->
+              <div class="cal-day end">27</div><div class="cal-day in-range">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+            </div>
+          </div>
+          <!-- Date Inputs -->
+          <div class="date-inputs">
+            <div class="date-input-group">
+              <label>Start date</label>
+              <input type="text" value="22 Apr 2025">
+            </div>
+            <div class="date-input-group">
+              <label>End date</label>
+              <input type="text" value="28 Apr 2025">
+            </div>
+            <div class="date-note">7 days · 5 working days excluding weekends</div>
+          </div>
+        </div>
+
+        <!-- Calling Window -->
+        <div style="margin-top:16px;">
+          <div class="section-label">Calling window (IST)</div>
+          <div class="time-row">
+            <div class="time-group">
+              <label>Start time</label>
+              <div class="time-display">
+                <div class="time-val">09:00 am</div>
+                <div class="time-note">Earliest outreach time</div>
+              </div>
+            </div>
+            <div class="time-group">
+              <label>End time</label>
+              <div class="time-display">
+                <div class="time-val">06:00 pm</div>
+                <div class="time-note">Latest outreach time</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Retry info -->
+        <div class="retry-row">
+          <span class="retry-text">Retries will be attempted within the stated calling window: Mon, Tue, Wed, Thu, Fri</span>
+        </div>
+
+        <!-- Active Days -->
+        <div class="section-label" style="margin-top:12px;">Active days</div>
+        <div class="active-days">
+          <div class="day-pill">Mo</div>
+          <div class="day-pill">Tu</div>
+          <div class="day-pill">We</div>
+          <div class="day-pill">Th</div>
+          <div class="day-pill">Fr</div>
+          <div class="day-pill inactive">Sa</div>
+          <div class="day-pill inactive">Su</div>
+        </div>
+
+        <!-- Toggles -->
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Skip weekends automatically</div>
+            <div class="toggle-sub">No outreach on Saturday and Sunday</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Honour national holidays</div>
+            <div class="toggle-sub">Block outreach on Indian public holidays</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Stagger send rate</div>
+            <div class="toggle-sub">Spread contacts evenly across the window (avoid spike)</div>
+          </div>
+          <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Send completion report</div>
+            <div class="toggle-sub">Email summary when campaign finishes</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audience Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">👥</div>
+          <div>
+            <div class="card-title">Audience</div>
+            <div class="card-subtitle">Select contact list or segment to target</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="audience-list">
+          <div class="audience-item">
+            <div class="audience-item-left">
+              <div class="audience-avatar">👤</div>
+              <div>
+                <div class="audience-name">Tamil retail customers — Apr 2025</div>
+                <div class="audience-sub">Uploaded list · last updated 20 Apr</div>
+              </div>
+            </div>
+            <div class="audience-count">12,400</div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-item-left">
+              <div class="audience-avatar">🔍</div>
+              <div>
+                <div class="audience-name">Segment: overdue EMI &gt; 30 days</div>
+                <div class="audience-sub">Dynamic segment · updates daily</div>
+              </div>
+            </div>
+            <div class="audience-count">3,840</div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-item-left">
+              <div class="audience-avatar">👤</div>
+              <div>
+                <div class="audience-name">All active policyholders</div>
+                <div class="audience-sub">CRM sync · English + Tamil</div>
+              </div>
+            </div>
+            <div class="audience-count">28,100</div>
+          </div>
+        </div>
+        <div class="audience-actions">
+          <button class="btn-outline">Upload new list</button>
+          <button class="btn-outline">Build a segment</button>
+        </div>
+        <div class="section-label">Exclusions — do not contact</div>
+        <div class="dnd-tag">Global DND list (auto-applied)</div>
+        <div class="warning-box" style="margin-top:8px;">
+          <div class="warn-icon">⚠</div>
+          <div>
+            <div class="warn-title">Schedule overlap detected</div>
+            <div class="warn-text">2,160 contacts in this list are already in the EMI collection — Mar campaign running on the same dates. They will receive a 48hr cool-down before this campaign reaches them.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Campaign Preview</div>
+    <div class="preview-name">Q1 Appointment reminder <span class="preview-online"></span></div>
+    <div class="preview-sub">Appointment confirmation · Tamil</div>
+
+    <div class="preview-row">
+      <span class="preview-key">Audience</span>
+      <span class="preview-val green">12,400 contacts</span>
+    </div>
+    <div class="preview-row">
+      <span class="preview-key">Date range</span>
+      <span class="preview-val">22 Apr – 28 Apr 2025</span>
+    </div>
+    <div class="preview-row">
+      <span class="preview-key">Window</span>
+      <span class="preview-val">9:00am – 6:00pm IST</span>
+    </div>
+    <div class="preview-row">
+      <span class="preview-key">Working days</span>
+      <span class="preview-val">5 (Mon – Fri)</span>
+    </div>
+    <div class="preview-row">
+      <span class="preview-key">Retries</span>
+      <span class="preview-val">2 × · 4hr gap</span>
+    </div>
+    <div class="preview-row">
+      <span class="preview-key">Flow</span>
+      <span class="preview-val">Appt. confirm — Voice + WA</span>
+    </div>
+
+    <div class="ch-priority-section">
+      <div class="ch-priority-title">Channel priority</div>
+      <div class="ch-priority-item">
+        <span style="font-size:14px;">📞</span>
+        <span class="ch-name">Voice (Twilio)</span>
+        <span class="ch-badge">1st · primary</span>
+      </div>
+      <div style="padding-left:22px; font-size:10px; color:#555; margin:-2px 0 6px;">1 fallback after 30 min</div>
+      <div class="ch-priority-item">
+        <span style="font-size:14px;">💬</span>
+        <span class="ch-name">WhatsApp (Meta)</span>
+        <span class="ch-badge fallback">2nd · fallback</span>
+      </div>
+    </div>
+
+    <div class="reach-section">
+      <div class="ch-priority-title">Estimated daily reach</div>
+      <div class="reach-num">~2,480</div>
+      <div class="reach-sub">contacts per day across 5 days</div>
+      <div class="reach-bar"><div class="reach-bar-fill"></div></div>
+    </div>
+
+    <div class="timeline">
+      <div class="ch-priority-title">Campaign timeline</div>
+      <div class="timeline-item">
+        <div class="tl-dot green"></div>
+        <div>
+          <div class="tl-label">Campaign starts</div>
+          <div class="tl-sub">22 Apr · 9:00am</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot yellow"></div>
+        <div>
+          <div class="tl-label">Voice calls begin</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot yellow"></div>
+        <div>
+          <div class="tl-label">WhatsApp fallbacks</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot gray"></div>
+        <div>
+          <div class="tl-label">Last retry window</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot gray"></div>
+        <div>
+          <div class="tl-label">Campaign ends + report</div>
+          <div class="tl-sub">28 Apr · 6:00pm IST</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-warn">
+      <div class="warn-head">⚠ 1 warning</div>
+      <div class="warn-body">2,160 contacts overlap with EMI collection — Mar. Cool-down applied automatically.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-info">12,400 contacts · 5 days · Voice + WhatsApp · Tamil</div>
+  <div class="bottom-actions">
+    <button class="btn-back">+ Back</button>
+    <button class="btn-draft">Save draft</button>
+    <button class="btn-schedule">Schedule campaign</button>
+  </div>
+</div>
+
+</body>
+</html>

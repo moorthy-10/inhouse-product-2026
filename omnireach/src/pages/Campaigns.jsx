@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import {
+
   Search,
   Bell,
   Sun,
@@ -33,37 +35,7 @@ const campaignList = [
     ctr: '71% CTR',
     status: 'Live',
     progress: 80,
-  },
-  {
-    name: 'EMI Collection - Mar',
-    date: 'Created Mar 01, 2024',
-    channels: ['sms', 'whatsapp'],
-    sent: '12,000',
-    engaged: '8,400',
-    ctr: '70% CTR',
-    status: 'Paused',
-    progress: 45,
-  },
-  {
-    name: 'Winter Outreach',
-    date: 'Created Dec 05, 2023',
-    channels: ['voice'],
-    sent: '8,200',
-    engaged: '1,500',
-    ctr: '18% CTR',
-    status: 'Ended',
-    progress: 100,
-  },
-  {
-    name: 'New Product Survey',
-    date: 'Created Apr 10, 2024',
-    channels: ['whatsapp'],
-    sent: '1,200',
-    engaged: '980',
-    ctr: '82% CTR',
-    status: 'Live',
-    progress: 15,
-  },
+  }
 ];
 
 function getStatusInfo(status) {
@@ -111,10 +83,10 @@ export default function Campaigns() {
             <h1 className="campaigns-title">Campaigns</h1>
             <p className="campaigns-subtitle">Manage and monitor your automated communication flows.</p>
           </div>
-          <button className="btn-primary" style={{ padding: '12px 24px', fontSize: '1rem' }}>
+          <Link to="/campaigns/new" className="btn-primary" style={{ padding: '12px 24px', fontSize: '1rem', textDecoration: 'none' }}>
             <Plus size={20} />
             <span>New Campaign</span>
-          </button>
+          </Link>
         </div>
 
         {/* Stats Grid */}
@@ -161,10 +133,12 @@ export default function Campaigns() {
                   return (
                     <tr key={i}>
                       <td>
-                        <div className="campaign-info-stack">
-                          <span className="campaign-name-text">{c.name}</span>
-                          <span className="campaign-date-text">{c.date}</span>
-                        </div>
+                        <Link to="/campaigns/details" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                          <div className="campaign-info-stack">
+                            <span className="campaign-name-text">{c.name}</span>
+                            <span className="campaign-date-text">{c.date}</span>
+                          </div>
+                        </Link>
                       </td>
                       <td>
                         <div className="flex gap-2">
@@ -201,7 +175,10 @@ export default function Campaigns() {
                       <td style={{ textAlign: 'right' }}>
                         <div className="flex justify-end gap-2">
                           <button className="icon-btn"><Edit2 size={16} /></button>
-                          <button className="icon-btn"><Eye size={16} /></button>
+                          <Link to="/campaigns/details">
+                            <button className="icon-btn"><Eye size={16} /></button>
+                          </Link>
+
                         </div>
                       </td>
                     </tr>
@@ -213,7 +190,7 @@ export default function Campaigns() {
 
           {/* Pagination */}
           <div className="pagination-container">
-            <span className="text-sm text-slate-500">Showing 4 of 12 campaigns</span>
+            <span className="text-sm text-slate-500">Showing 1 of 1 campaigns</span>
             <div className="flex gap-2">
               <button className="btn-secondary opacity-50 cursor-not-allowed">Previous</button>
               <button className="btn-secondary">Next</button>

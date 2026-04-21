@@ -85,7 +85,7 @@
 }
 
 .campaign-name-text {
-  fontWeight: 600;
+  font-weight: 600;
   color: var(--text-primary);
 }
 

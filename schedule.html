@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule – April 2025</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0e1017;
+    color: #d1d5db;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 12px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px;
+    background: #13161e;
+    border-bottom: 1px solid #1e2333;
+    flex-shrink: 0;
+  }
+  .topbar-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .topbar-center { display: flex; align-items: center; gap: 6px; }
+  .view-btns { display: flex; background: #1a1f2e; border-radius: 7px; overflow: hidden; border: 1px solid #2a2f3d; }
+  .view-btn {
+    padding: 5px 14px; font-size: 12px; color: #9aa0b0; cursor: pointer; border: none;
+    background: transparent;
+  }
+  .view-btn.active { background: #c8f135; color: #0f1117; font-weight: 700; }
+  .nav-btn {
+    width: 28px; height: 28px; background: #1e2333; border: 1px solid #2a2f3d;
+    color: #9aa0b0; border-radius: 6px; cursor: pointer; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-btn:hover { color: #fff; background: #2a2f3d; }
+  .month-label { font-size: 14px; font-weight: 600; color: #fff; padding: 0 6px; }
+  .topbar-right { display: flex; gap: 8px; align-items: center; }
+  .btn-export {
+    background: #1e2333; color: #9aa0b0; border: 1px solid #2a2f3d;
+    padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .btn-export:hover { color: #fff; }
+  .btn-schedule {
+    background: #c8f135; color: #0f1117; border: none;
+    padding: 6px 13px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  .btn-schedule:hover { background: #d4f54a; }
+
+  /* ── LEGEND BAR ── */
+  .legendbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 18px;
+    background: #13161e;
+    border-bottom: 1px solid #1e2333;
+    flex-shrink: 0;
+  }
+  .legends { display: flex; gap: 16px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #9aa0b0; }
+  .ldot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .ldot-voice { background: #c8f135; }
+  .ldot-whatsapp { background: #4ade80; }
+  .ldot-sms { background: #38bdf8; }
+  .ldot-email { background: #fb923c; }
+  .ldot-survey { background: #a78bfa; }
+  .ldot-today { width: 8px; height: 8px; border-radius: 50%; background: #c8f135; }
+  .legend-now { display: flex; align-items: center; gap: 5px; color: #9aa0b0; font-size: 12px; }
+  .now-line { width: 24px; height: 2px; background: #9aa0b0; border-radius: 1px; }
+  .tz-info { font-size: 11px; color: #6b7280; }
+
+  /* ── MAIN LAYOUT ── */
+  .main-layout {
+    display: flex; flex: 1; overflow: hidden;
+  }
+
+  /* ── CALENDAR GRID ── */
+  .calendar-area {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* Day headers */
+  .day-headers {
+    display: grid; grid-template-columns: 52px repeat(7, 1fr);
+    border-bottom: 1px solid #1e2333;
+    background: #13161e; flex-shrink: 0;
+  }
+  .time-col-hdr { width: 52px; }
+  .day-hdr {
+    padding: 8px 0; text-align: center;
+    border-left: 1px solid #1e2333;
+  }
+  .day-hdr .dow { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+  .day-hdr .dom { font-size: 18px; font-weight: 700; color: #9aa0b0; margin-top: 2px; }
+  .day-hdr.today .dom {
+    background: #c8f135; color: #0f1117;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 2px auto 0;
+  }
+
+  /* Scrollable time grid */
+  .time-grid-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
+  .time-grid-scroll::-webkit-scrollbar { width: 5px; }
+  .time-grid-scroll::-webkit-scrollbar-track { background: #0e1017; }
+  .time-grid-scroll::-webkit-scrollbar-thumb { background: #2a2f3d; border-radius: 3px; }
+
+  .time-grid {
+    display: grid;
+    grid-template-columns: 52px repeat(7, 1fr);
+    position: relative;
+  }
+
+  /* Time labels */
+  .time-labels { display: contents; }
+  .time-slot-row {
+    display: contents;
+  }
+  .time-label {
+    grid-column: 1;
+    height: 60px;
+    display: flex; align-items: flex-start; justify-content: flex-end;
+    padding-right: 8px; padding-top: 2px;
+    font-size: 10px; color: #4b5563;
+    flex-shrink: 0;
+    border-top: 1px solid #1e2333;
+  }
+  .time-cell {
+    height: 60px;
+    border-left: 1px solid #1e2333;
+    border-top: 1px solid #1e2333;
+    position: relative;
+  }
+
+  /* Events column wrapper */
+  .events-col {
+    position: relative;
+    grid-column: span 1;
+  }
+
+  /* Grid rows for 9am–6pm = 10 hours */
+  .grid-rows {
+    display: contents;
+  }
+
+  /* NOW line */
+  .now-indicator {
+    position: absolute;
+    left: 0; right: 0;
+    display: flex; align-items: center;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .now-dot { width: 10px; height: 10px; border-radius: 50%; background: #c8f135; flex-shrink: 0; }
+  .now-line-h { flex: 1; height: 2px; background: #c8f135; }
+
+  /* Calendar events */
+  .cal-event {
+    position: absolute;
+    left: 3px; right: 3px;
+    border-radius: 5px;
+    padding: 5px 7px;
+    font-size: 11px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 5;
+  }
+  .cal-event:hover { filter: brightness(1.1); }
+  .cal-event .ev-title { font-weight: 600; color: #fff; line-height: 1.3; }
+  .cal-event .ev-meta { opacity: 0.85; margin-top: 2px; line-height: 1.3; }
+  .cal-event .ev-dots { margin-top: 4px; display: flex; gap: 3px; }
+  .ev-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  .ev-voice { background: #2e3a0e; border-left: 3px solid #c8f135; }
+  .ev-green { background: #1a3a1a; border-left: 3px solid #4ade80; }
+  .ev-blue  { background: #1a2a3a; border-left: 3px solid #38bdf8; }
+  .ev-orange{ background: #3a2010; border-left: 3px solid #fb923c; }
+  .ev-purple{ background: #2a1a3a; border-left: 3px solid #a78bfa; }
+  .ev-teal  { background: #0f2d2d; border-left: 3px solid #2dd4bf; }
+
+  /* ── RIGHT SIDEBAR ── */
+  .sidebar {
+    width: 230px;
+    background: #13161e;
+    border-left: 1px solid #1e2333;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* Mini calendar */
+  .mini-cal { padding: 12px 12px 8px; border-bottom: 1px solid #1e2333; }
+  .mini-cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .mini-cal-title { font-size: 13px; font-weight: 600; color: #fff; }
+  .mini-nav {
+    display: flex; gap: 4px;
+  }
+  .mini-nav-btn {
+    width: 22px; height: 22px; background: #1e2333; border: 1px solid #2a2f3d;
+    color: #9aa0b0; border-radius: 5px; cursor: pointer; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mini-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;
+    text-align: center;
+  }
+  .mini-dow { font-size: 10px; color: #4b5563; padding: 3px 0; }
+  .mini-day {
+    font-size: 11px; color: #9aa0b0; padding: 4px 2px;
+    border-radius: 50%; cursor: pointer; line-height: 1;
+  }
+  .mini-day:hover { background: #1e2333; }
+  .mini-day.other-month { color: #374151; }
+  .mini-day.today { background: #c8f135; color: #0f1117; font-weight: 700; }
+  .mini-day.selected { background: #1e2333; color: #fff; }
+  .mini-day.has-event { position: relative; }
+  .mini-day.has-event::after {
+    content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%);
+    width: 3px; height: 3px; border-radius: 50%; background: #c8f135;
+  }
+  .mini-day.today.has-event::after { background: #0f1117; }
+
+  /* This week panel */
+  .this-week { padding: 10px 12px; flex: 1; overflow-y: auto; }
+  .this-week::-webkit-scrollbar { width: 4px; }
+  .this-week::-webkit-scrollbar-thumb { background: #2a2f3d; border-radius: 2px; }
+  .this-week-title { font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 10px; letter-spacing: 0.03em; }
+
+  .week-campaign {
+    background: #0e1017; border: 1px solid #1e2333;
+    border-radius: 8px; padding: 10px 10px 8px;
+    margin-bottom: 8px;
+  }
+  .wc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+  .wc-name { font-size: 12px; font-weight: 600; color: #e2e8f0; line-height: 1.3; }
+  .wc-badge {
+    font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
+    flex-shrink: 0; margin-left: 6px;
+  }
+  .badge-live { background: #1a3a1a; color: #4ade80; border: 1px solid #15803d; }
+  .badge-scheduled { background: #1a2a3a; color: #60a5fa; border: 1px solid #1d4ed8; }
+  .badge-paused { background: #3a2a10; color: #fbbf24; border: 1px solid #b45309; }
+  .badge-draft { background: #1e2333; color: #9aa0b0; border: 1px solid #2a2f3d; }
+
+  .wc-date { font-size: 11px; color: #6b7280; display: flex; align-items: center; gap: 4px; margin-bottom: 6px; }
+  .cal-icon { font-size: 10px; }
+  .wc-tags { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
+  .wc-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500;
+  }
+  .t-voice { background: #2e3a0e; color: #c8f135; }
+  .t-whatsapp { background: #1a3a1a; color: #4ade80; }
+  .t-sms { background: #1a2a3a; color: #38bdf8; }
+  .t-email { background: #3a2010; color: #fb923c; }
+  .t-survey { background: #2a1a3a; color: #a78bfa; }
+
+  .wc-progress-label { font-size: 10px; color: #6b7280; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .wc-progress-track { height: 4px; background: #1e2333; border-radius: 2px; overflow: hidden; margin-bottom: 2px; }
+  .wc-progress-fill { height: 100%; border-radius: 2px; }
+  .prog-green { background: #c8f135; }
+  .prog-orange { background: #fb923c; }
+
+  .wc-info { font-size: 10px; color: #6b7280; display: flex; justify-content: space-between; }
+  .wc-starts { font-size: 11px; color: #6b7280; }
+  .wc-starts span { color: #9aa0b0; }
+
+  /* ── STATUS BAR ── */
+  .statusbar {
+    display: flex; align-items: center; gap: 0;
+    padding: 6px 16px;
+    background: #0e1017;
+    border-top: 1px solid #1e2333;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .sb-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: #6b7280; padding: 0 14px;
+    border-right: 1px solid #1e2333;
+    white-space: nowrap;
+  }
+  .sb-item:first-child { padding-left: 0; }
+  .sb-item:last-child { border-right: none; }
+  .sb-item strong { color: #9aa0b0; font-weight: 600; }
+  .sb-icon { font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title">Schedule</div>
+  <div class="topbar-center">
+    <div class="view-btns">
+      <button class="view-btn">Day</button>
+      <button class="view-btn active">Week</button>
+      <button class="view-btn">Month</button>
+    </div>
+    <button class="nav-btn">‹</button>
+    <span class="month-label">April 2025</span>
+    <button class="nav-btn">›</button>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-export">⬆ Export</button>
+    <button class="btn-schedule">+ Schedule campaign</button>
+  </div>
+</div>
+
+<!-- LEGEND BAR -->
+<div class="legendbar">
+  <div class="legends">
+    <div class="legend-item"><div class="ldot ldot-voice"></div> Voice</div>
+    <div class="legend-item"><div class="ldot ldot-whatsapp"></div> WhatsApp</div>
+    <div class="legend-item"><div class="ldot ldot-sms"></div> SMS</div>
+    <div class="legend-item"><div class="ldot ldot-email"></div> Email</div>
+    <div class="legend-item"><div class="ldot ldot-survey"></div> Survey</div>
+    <div class="legend-item" style="margin-left:10px;"><div class="ldot-today"></div> Today</div>
+    <div class="legend-now"><div class="now-line"></div> Now</div>
+  </div>
+  <div class="tz-info">IST · 9am–6pm calling window active</div>
+</div>
+
+<!-- MAIN -->
+<div class="main-layout">
+  <div class="calendar-area">
+
+    <!-- Day Headers -->
+    <div class="day-headers">
+      <div class="time-col-hdr"></div>
+      <div class="day-hdr"><div class="dow">MON</div><div class="dom">21</div></div>
+      <div class="day-hdr today"><div class="dow">TUE</div><div class="dom">22</div></div>
+      <div class="day-hdr"><div class="dow">WED</div><div class="dom">23</div></div>
+      <div class="day-hdr"><div class="dow">THU</div><div class="dom">24</div></div>
+      <div class="day-hdr"><div class="dow">FRI</div><div class="dom">25</div></div>
+      <div class="day-hdr" style="opacity:0.4;"><div class="dow">SAT</div><div class="dom">26</div></div>
+      <div class="day-hdr" style="opacity:0.4;"><div class="dow">SUN</div><div class="dom">27</div></div>
+    </div>
+
+    <!-- Time Grid -->
+    <div class="time-grid-scroll">
+      <div class="time-grid" id="grid">
+
+        <!-- Time labels + empty cells — 9am to 6pm = 10 rows -->
+        <!-- We use a flat grid approach: col1 = time, cols 2-8 = days -->
+
+        <!-- 9 am -->
+        <div class="time-label">9 am</div>
+        <div class="time-cell" id="c-mon-9"></div>
+        <div class="time-cell" id="c-tue-9"></div>
+        <div class="time-cell" id="c-wed-9"></div>
+        <div class="time-cell" id="c-thu-9"></div>
+        <div class="time-cell" id="c-fri-9"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 10 am -->
+        <div class="time-label">10 am</div>
+        <div class="time-cell" id="c-mon-10"></div>
+        <div class="time-cell" id="c-tue-10"></div>
+        <div class="time-cell" id="c-wed-10"></div>
+        <div class="time-cell" id="c-thu-10"></div>
+        <div class="time-cell" id="c-fri-10"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 11 am -->
+        <div class="time-label">11 am</div>
+        <div class="time-cell" id="c-mon-11"></div>
+        <div class="time-cell" id="c-tue-11"></div>
+        <div class="time-cell" id="c-wed-11"></div>
+        <div class="time-cell" id="c-thu-11"></div>
+        <div class="time-cell" id="c-fri-11"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 12 pm -->
+        <div class="time-label">12 pm</div>
+        <div class="time-cell" id="c-mon-12"></div>
+        <div class="time-cell" id="c-tue-12"></div>
+        <div class="time-cell" id="c-wed-12"></div>
+        <div class="time-cell" id="c-thu-12"></div>
+        <div class="time-cell" id="c-fri-12"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 1 pm -->
+        <div class="time-label">1 pm</div>
+        <div class="time-cell" id="c-mon-13"></div>
+        <div class="time-cell" id="c-tue-13"></div>
+        <div class="time-cell" id="c-wed-13"></div>
+        <div class="time-cell" id="c-thu-13"></div>
+        <div class="time-cell" id="c-fri-13"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 2 pm -->
+        <div class="time-label">2 pm</div>
+        <div class="time-cell" id="c-mon-14"></div>
+        <div class="time-cell" id="c-tue-14"></div>
+        <div class="time-cell" id="c-wed-14"></div>
+        <div class="time-cell" id="c-thu-14"></div>
+        <div class="time-cell" id="c-fri-14"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 3 pm -->
+        <div class="time-label">3 pm</div>
+        <div class="time-cell" id="c-mon-15"></div>
+        <div class="time-cell" id="c-tue-15"></div>
+        <div class="time-cell" id="c-wed-15"></div>
+        <div class="time-cell" id="c-thu-15"></div>
+        <div class="time-cell" id="c-fri-15"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 4 pm -->
+        <div class="time-label">4 pm</div>
+        <div class="time-cell" id="c-mon-16"></div>
+        <div class="time-cell" id="c-tue-16"></div>
+        <div class="time-cell" id="c-wed-16"></div>
+        <div class="time-cell" id="c-thu-16"></div>
+        <div class="time-cell" id="c-fri-16"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 5 pm -->
+        <div class="time-label">5 pm</div>
+        <div class="time-cell" id="c-mon-17"></div>
+        <div class="time-cell" id="c-tue-17"></div>
+        <div class="time-cell" id="c-wed-17"></div>
+        <div class="time-cell" id="c-thu-17"></div>
+        <div class="time-cell" id="c-fri-17"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+        <!-- 6 pm -->
+        <div class="time-label">6 pm</div>
+        <div class="time-cell" id="c-mon-18"></div>
+        <div class="time-cell" id="c-tue-18"></div>
+        <div class="time-cell" id="c-wed-18"></div>
+        <div class="time-cell" id="c-thu-18"></div>
+        <div class="time-cell" id="c-fri-18"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+        <div class="time-cell" style="background:rgba(30,35,51,0.3)"></div>
+
+      </div><!-- /time-grid -->
+
+      <!-- EVENTS OVERLAY — positioned absolutely over grid using a relative wrapper -->
+      <div id="events-overlay" style="position:relative;margin-top:-600px;pointer-events:none;">
+        <!-- Events injected by JS -->
+      </div>
+    </div><!-- /scroll -->
+
+  </div><!-- /calendar-area -->
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Mini Calendar -->
+    <div class="mini-cal">
+      <div class="mini-cal-header">
+        <span class="mini-cal-title">April 2025</span>
+        <div class="mini-nav">
+          <button class="mini-nav-btn">‹</button>
+          <button class="mini-nav-btn">›</button>
+        </div>
+      </div>
+      <div class="mini-grid">
+        <div class="mini-dow">M</div><div class="mini-dow">T</div><div class="mini-dow">W</div>
+        <div class="mini-dow">T</div><div class="mini-dow">F</div><div class="mini-dow">S</div><div class="mini-dow">S</div>
+        <!-- Week 1 -->
+        <div class="mini-day other-month">31</div>
+        <div class="mini-day">1</div><div class="mini-day">2</div><div class="mini-day">3</div>
+        <div class="mini-day">4</div><div class="mini-day">5</div><div class="mini-day">6</div>
+        <!-- Week 2 -->
+        <div class="mini-day">7</div><div class="mini-day">8</div><div class="mini-day has-event">9</div>
+        <div class="mini-day has-event">10</div><div class="mini-day has-event">11</div>
+        <div class="mini-day">12</div><div class="mini-day">13</div>
+        <!-- Week 3 -->
+        <div class="mini-day">14</div><div class="mini-day">15</div><div class="mini-day">16</div>
+        <div class="mini-day">17</div><div class="mini-day has-event">18</div>
+        <div class="mini-day">19</div><div class="mini-day">20</div>
+        <!-- Week 4 (current) -->
+        <div class="mini-day selected has-event">21</div>
+        <div class="mini-day today has-event">22</div>
+        <div class="mini-day selected has-event">23</div>
+        <div class="mini-day selected has-event">24</div>
+        <div class="mini-day selected has-event">25</div>
+        <div class="mini-day">26</div><div class="mini-day">27</div>
+        <!-- Week 5 -->
+        <div class="mini-day">28</div><div class="mini-day">29</div>
+        <div class="mini-day has-event">30</div>
+        <div class="mini-day other-month">1</div><div class="mini-day other-month">2</div>
+        <div class="mini-day other-month">3</div><div class="mini-day other-month">4</div>
+      </div>
+    </div>
+
+    <!-- This Week -->
+    <div class="this-week">
+      <div class="this-week-title">This week</div>
+
+      <!-- Q1 Appointment reminder -->
+      <div class="week-campaign">
+        <div class="wc-header">
+          <span class="wc-name">Q1 Appointment reminder</span>
+          <span class="wc-badge badge-live">Live</span>
+        </div>
+        <div class="wc-date"><span class="cal-icon">📅</span> 21–25 Apr · 9am–6pm</div>
+        <div class="wc-tags">
+          <span class="wc-tag t-voice">Voice</span>
+          <span class="wc-tag t-whatsapp">WhatsApp</span>
+        </div>
+        <div class="wc-progress-label"><span>Progress</span><span>9,820 / 12,400</span></div>
+        <div class="wc-progress-track"><div class="wc-progress-fill prog-green" style="width:79%"></div></div>
+      </div>
+
+      <!-- EMI collection -->
+      <div class="week-campaign">
+        <div class="wc-header">
+          <span class="wc-name">EMI collection — Mar</span>
+          <span class="wc-badge badge-live">Live</span>
+        </div>
+        <div class="wc-date"><span class="cal-icon">📅</span> 22–23 Apr · 11am–1pm</div>
+        <div class="wc-tags">
+          <span class="wc-tag t-voice">Voice</span>
+          <span class="wc-tag t-whatsapp">WhatsApp</span>
+        </div>
+        <div class="wc-progress-label"><span>Progress</span><span>5,340 / 8,100</span></div>
+        <div class="wc-progress-track"><div class="wc-progress-fill prog-green" style="width:66%"></div></div>
+      </div>
+
+      <!-- Sales outreach -->
+      <div class="week-campaign">
+        <div class="wc-header">
+          <span class="wc-name">Sales outreach — Apr</span>
+          <span class="wc-badge badge-scheduled">Scheduled</span>
+        </div>
+        <div class="wc-date"><span class="cal-icon">📅</span> 23–25 Apr · 2:30pm start</div>
+        <div class="wc-tags">
+          <span class="wc-tag t-sms">SMS</span>
+          <span class="wc-tag t-voice">Voice</span>
+        </div>
+        <div class="wc-starts">Starts in <span>tomorrow</span></div>
+      </div>
+
+      <!-- Insurance renewal -->
+      <div class="week-campaign">
+        <div class="wc-header">
+          <span class="wc-name">Insurance renewal outreach</span>
+          <span class="wc-badge badge-paused">Paused</span>
+        </div>
+        <div class="wc-date"><span class="cal-icon">📅</span> 22–24 Apr · 11am–12pm</div>
+        <div class="wc-tags">
+          <span class="wc-tag t-email">Email</span>
+          <span class="wc-tag t-sms">SMS</span>
+        </div>
+        <div class="wc-progress-label"><span>Progress</span><span>2,100 / 4,200</span></div>
+        <div class="wc-progress-track"><div class="wc-progress-fill prog-orange" style="width:50%"></div></div>
+      </div>
+
+      <!-- NPS survey -->
+      <div class="week-campaign">
+        <div class="wc-header">
+          <span class="wc-name">NPS survey — post appt.</span>
+          <span class="wc-badge badge-scheduled">Scheduled</span>
+        </div>
+        <div class="wc-date"><span class="cal-icon">📅</span> 25 Apr · 10:00 – 11:30am</div>
+        <div class="wc-tags">
+          <span class="wc-tag t-survey">Survey</span>
+          <span class="wc-tag t-whatsapp">WhatsApp</span>
+        </div>
+        <div class="wc-info"><span>Contacts</span><span>3,841 ready</span></div>
+      </div>
+
+      <!-- CSAT survey -->
+      <div class="week-campaign">
+        <div class="wc-header">
+          <span class="wc-name">CSAT survey batch</span>
+          <span class="wc-badge badge-draft">Draft</span>
+        </div>
+        <div class="wc-date"><span class="cal-icon">📅</span> 21 Apr · 1:00 – 2:00pm</div>
+        <div class="wc-tags">
+          <span class="wc-tag t-survey">Survey</span>
+        </div>
+        <div class="wc-info" style="color:#6b7280;">Not published</div>
+      </div>
+
+    </div>
+  </div><!-- /sidebar -->
+
+</div><!-- /main-layout -->
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="sb-item"><span class="sb-icon">🕐</span> Calling window <strong>9:00am – 6:00pm IST</strong></div>
+  <div class="sb-item"><span class="sb-icon">📅</span> Weekends <strong>excluded</strong> from all campaigns</div>
+  <div class="sb-item"><span class="sb-icon">🔔</span> DND list synced <strong>daily at 8:00am</strong></div>
+  <div class="sb-item"><span class="sb-icon">📊</span> Max <strong>2 campaigns</strong> running simultaneously</div>
+  <div class="sb-item"><span class="sb-icon">⏱</span> Contact cool-down <strong>48 hrs</strong> between campaigns</div>
+</div>
+
+<script>
+// ── Event Data ──
+// Each event: { day: col index 1-7 (mon=1), startH: float hour, endH: float hour, title, meta, type, dots }
+const EVENTS = [
+  // Q1 Appointment reminder — spans Mon-Thu 9-11am
+  { day:1, startH:9,   endH:11,  title:'Q1 Appointment reminder', meta:'9:00 – 11:00am · 3,200 contacts', type:'ev-voice', dots:['#c8f135','#4ade80'] },
+  { day:2, startH:9,   endH:12.5,title:'Q1 Appointment reminder', meta:'9:00 – 11:00am · Live now', type:'ev-voice', dots:['#c8f135','#4ade80'], live:true },
+  { day:3, startH:9,   endH:11,  title:'Q1 Appointment reminder', meta:'9:00 – 11:00am · 3,200', type:'ev-voice', dots:['#c8f135','#4ade80'] },
+  { day:4, startH:9,   endH:11,  title:'Q1 Appointment reminder', meta:'9:00 – 11:00am · 2,020 left', type:'ev-voice', dots:['#c8f135','#4ade80'] },
+
+  // EMI collection — Mar  (Tue 11-1, Wed 11-1)
+  { day:2, startH:11,  endH:13,  title:'EMI collection — Mar', meta:'11:00am – 1:00pm · 2,800', type:'ev-green', dots:['#4ade80','#c8f135','#38bdf8'] },
+  { day:3, startH:11,  endH:13,  title:'EMI collection — Mar', meta:'11:00am – 1:00pm', type:'ev-green', dots:['#4ade80','#c8f135'] },
+
+  // Sales outreach — Apr (Wed & Thu 2:30-4/4:30)
+  { day:3, startH:14.5,endH:16,  title:'Sales outreach — Apr', meta:'2:30 – 4:00pm · 5,000', type:'ev-teal' },
+  { day:4, startH:14.5,endH:16.5,title:'Sales outreach — Apr', meta:'2:30 – 4:30pm · 5,000', type:'ev-teal' },
+
+  // Sales outreach Fri (final batch)
+  { day:5, startH:13,  endH:15,  title:'Sales outreach — Apr', meta:'1:00 – 3:00pm · final batch', type:'ev-teal' },
+
+  // Insurance renewal (Tue 3-4, Thu 11-12)
+  { day:2, startH:15,  endH:16,  title:'Insurance renewal', meta:'3:00 – 4:00pm · 4,200', type:'ev-orange' },
+  { day:4, startH:11,  endH:12,  title:'Insurance renewal', meta:'11:00am – 12:00pm', type:'ev-orange' },
+
+  // NPS survey — post appt. (Fri 10-11:30)
+  { day:5, startH:10,  endH:11.5,title:'NPS survey — post appt.', meta:'10:00 – 11:30am · 3,841', type:'ev-purple' },
+
+  // CSAT survey batch (Mon 1-2)
+  { day:1, startH:13,  endH:14,  title:'CSAT survey batch', meta:'1:00 – 2:00pm · 6,000', type:'ev-blue' },
+];
+
+const DAY_COLS = [null,'c-mon','c-tue','c-wed','c-thu','c-fri']; // 1=mon..5=fri
+const HOUR_START = 9;
+const HOUR_PX = 60; // each hour row = 60px
+
+const overlay = document.getElementById('events-overlay');
+const grid = document.getElementById('grid');
+
+function getColLeft(day) {
+  // grid is 52px time col + 7 equal cols
+  // We need the left offset of each day column
+  // Use getBoundingClientRect of a known cell
+  const cell = document.getElementById(`c-${DAY_COLS[day]}-9`);
+  if (!cell) return 0;
+  const gridRect = grid.getBoundingClientRect();
+  const cellRect = cell.getBoundingClientRect();
+  return cellRect.left - gridRect.left;
+}
+
+function getColWidth(day) {
+  const cell = document.getElementById(`c-${DAY_COLS[day]}-9`);
+  if (!cell) return 100;
+  return cell.getBoundingClientRect().width;
+}
+
+function renderEvents() {
+  overlay.innerHTML = '';
+  EVENTS.forEach(ev => {
+    if (ev.day < 1 || ev.day > 5) return;
+    const left = getColLeft(ev.day);
+    const width = getColWidth(ev.day);
+    const top = (ev.startH - HOUR_START) * HOUR_PX;
+    const height = (ev.endH - ev.startH) * HOUR_PX - 3;
+
+    const el = document.createElement('div');
+    el.className = `cal-event ${ev.type}`;
+    el.style.cssText = `
+      left: ${left + 3}px; width: ${width - 6}px;
+      top: ${top}px; height: ${height}px;
+      pointer-events: all;
+    `;
+
+    let dotsHtml = '';
+    if (ev.dots && ev.dots.length) {
+      dotsHtml = `<div class="ev-dots">${ev.dots.map(c=>`<div class="ev-dot" style="background:${c}"></div>`).join('')}</div>`;
+    }
+
+    el.innerHTML = `
+      <div class="ev-title">${ev.title}</div>
+      <div class="ev-meta">${ev.meta}</div>
+      ${dotsHtml}
+    `;
+    overlay.appendChild(el);
+  });
+
+  // NOW line — Tue col at ~10:10am
+  const nowLeft = getColLeft(2);
+  const nowWidth = getColWidth(2);
+  const nowTop = (10.17 - HOUR_START) * HOUR_PX;
+  const nowEl = document.createElement('div');
+  nowEl.className = 'now-indicator';
+  nowEl.style.cssText = `left:${nowLeft}px; width:${nowWidth}px; top:${nowTop}px;`;
+  nowEl.innerHTML = `<div class="now-dot"></div><div class="now-line-h"></div>`;
+  overlay.appendChild(nowEl);
+}
+
+// Render after layout
+window.addEventListener('load', () => {
+  setTimeout(renderEvents, 50);
+});
+window.addEventListener('resize', renderEvents);
+</script>
+
+</body>
+</html>

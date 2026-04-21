@@ -7,14 +7,14 @@
 :root {
   /* Surface Hierarchy */
   --bg-void: #0A0A0A;
-  --bg-base: #121212;
-  --sidebar-bg: #191919;
-  --card-bg: #1E1E1E;
-  --surface-bright: #2A2A2A;
-  --surface-highest: #353534;
+  --bg-base: #0A0A0A;
+  --sidebar-bg: #0A0A0A;
+  --card-bg: #1C1B1B;
+  --surface-bright: #141414;
+  --surface-highest: #2E2E2E;
 
   /* Accent Colors */
-  --neon-lime: #C9FF1F;
+  --neon-lime: #DFFF00;
   --neon-lime-dim: #A8D600;
   --accent-blue: #4A9EFF;
   --accent-purple: #A855F7;
